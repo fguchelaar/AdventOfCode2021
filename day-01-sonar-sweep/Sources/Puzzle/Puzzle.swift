@@ -8,25 +8,14 @@ public class Puzzle {
     }
 
     public func part1() -> Int {
-        var x = 0
-        for i in 1 ..< input.count {
-            if input[i] > input[i - 1] {
-                x += 1
-            }
-        }
-        return x
+        zip(input.dropFirst(), input)
+            .filter { $0.0 > $0.1 }
+            .count
     }
 
     public func part2() -> Int {
-        var x = 0
-        for i in 3 ..< input.count {
-            let w1 = input[i - 3] + input[i - 2] + input[i - 1]
-            let w2 = input[i - 2] + input[i - 1] + input[i]
-
-            if w2 > w1 {
-                x += 1
-            }
-        }
-        return x
+        zip(input.dropFirst(3), input)
+            .filter { $0.0 > $0.1 }
+            .count
     }
 }
