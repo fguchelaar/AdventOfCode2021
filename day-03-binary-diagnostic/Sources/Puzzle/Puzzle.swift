@@ -18,17 +18,17 @@ public class Puzzle {
 
         var gamma = 0
         var epsilon = 0
-
-        for q in 0 ..< numberOfBits {
-            let r = Int(pow(2.0, Double(q)))
+        var mask = 1
+        for _ in 0 ..< numberOfBits {
             let numberOfOnes = report.reduce(0) { a, c in
-                a + (c & r == r ? 1 : 0)
+                a + (c & mask == mask ? 1 : 0)
             }
             if numberOfOnes > count / 2 {
-                gamma |= r
+                gamma |= mask
             } else {
-                epsilon |= r
+                epsilon |= mask
             }
+            mask <<= 1
         }
 
         return gamma * epsilon
@@ -41,21 +41,22 @@ public class Puzzle {
     private func findRating(in report: [Int], reversed: Bool = false) -> Int {
         var _report = report
         // make sure to start at the front!!!
-        for q in (0 ..< numberOfBits).reversed() {
-            let r = Int(pow(2.0, Double(q)))
+        var mask = Int(pow(2.0, Double(numberOfBits - 1)))
+        for _ in (0 ..< numberOfBits) {
             let numberOfOnes = _report.reduce(0) { a, c in
-                a + (c & r == r ? 1 : 0)
+                a + (c & mask == mask ? 1 : 0)
             }
 
             if numberOfOnes >= _report.count - numberOfOnes {
-                _report = _report.filter { $0 & r == (reversed ? 0 : r) }
+                _report = _report.filter { $0 & mask == (reversed ? 0 : mask) }
             } else {
-                _report = _report.filter { $0 & r == (reversed ? r : 0) }
+                _report = _report.filter { $0 & mask == (reversed ? mask : 0) }
             }
 
             if _report.count == 1 {
                 return _report[0]
             }
+            mask >>= 1
         }
         fatalError()
     }
