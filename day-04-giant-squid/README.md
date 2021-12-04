@@ -1,0 +1,3 @@
+# 04 [Giant Squid]
+
+The story reminded me about a movie I once saw...
