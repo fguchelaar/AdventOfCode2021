@@ -16,16 +16,12 @@ struct Line {
     }
 
     var pointsOnLine: [Point] {
-        let dx = from.x == to.x ? 0 : from.x < to.x ? 1 : -1
-        let dy = from.y == to.y ? 0 : from.y < to.y ? 1 : -1
-        var points = [Point]()
-        var current = from
-        points.append(current)
-        while current != to {
-            current = Point(x: current.x + dx, y: current.y + dy)
-            points.append(current)
+        let dx = (to.x - from.x).signum()
+        let dy = (to.y - from.y).signum()
+
+        return (0 ... max(abs(to.x - from.x), abs(to.y - from.y))).map { i in
+            Point(x: from.x + dx * i, y: from.y + dy * i)
         }
-        return points
     }
 }
 
@@ -49,29 +45,22 @@ public class Puzzle {
     }
 
     public func part1() -> Int {
-        var diagram = [Point: Int]()
-
-        for line in lines.filter({ $0.isVertical || $0.isHorizontal }) {
-            for point in line.pointsOnLine {
-                diagram[point, default: 0] += 1
+        return lines
+            .filter { $0.isVertical || $0.isHorizontal }
+            .flatMap { $0.pointsOnLine }
+            .reduce(into: [Point: Int]()) { d, point in
+                d[point, default: 0] += 1
             }
-        }
-
-        return diagram
             .filter { $0.value > 1 }
             .count
     }
 
     public func part2() -> Int {
-        var diagram = [Point: Int]()
-
-        for line in lines {
-            for point in line.pointsOnLine {
-                diagram[point, default: 0] += 1
+        return lines
+            .flatMap { $0.pointsOnLine }
+            .reduce(into: [Point: Int]()) { d, point in
+                d[point, default: 0] += 1
             }
-        }
-
-        return diagram
             .filter { $0.value > 1 }
             .count
     }
