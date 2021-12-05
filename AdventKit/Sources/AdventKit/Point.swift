@@ -28,6 +28,15 @@ public struct Point: Equatable, Hashable {
         self.y = y
     }
 
+    public init?(string: String) {
+        let parts = string.split(separator: ",")
+        guard let x = Int(parts[0]), let y = Int(parts[1]) else {
+            return nil
+        }
+        self.x = x
+        self.y = y
+    }
+
     /// returns the manhattan distance between this Point and the provided one
     public func manhattan(to other: Point) -> Int {
         return abs(other.x - x) + abs(other.y - y)
