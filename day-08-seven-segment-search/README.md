@@ -1,5 +1,13 @@
 # 08 [Seven Segment Search] 
 
+**NB:** after submitting the answer for part two, I've refactored it to the 
+current version. For historic reasons, here is the gist of my first solution.
+
+Performance-wise there is no difference. The current approach is somewhat more
+concise however.
+
+*V1:*
+
 Based on the provided information, all segments are labeled a-g as following:
 
 ```
@@ -34,5 +42,3 @@ Now there is only one segment left with a count of 8, which is `c`.
 Next up find `d` by subtracing segments `b`, `c` and `f` from the only pattern with a length of 4 (which is the `4` digit.)
 
 That leaves us with the last segment: `g`.
-
-The algorithm is also documented inline in the code.
