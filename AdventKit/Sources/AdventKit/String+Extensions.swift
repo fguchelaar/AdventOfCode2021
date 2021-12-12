@@ -18,4 +18,28 @@ public extension String {
     func extractInts() -> [Int] {
         return split(whereSeparator: { !"-1234567890".contains($0) }).compactMap { Int($0) }
     }
+
+    static func isLowercase(string: String) -> Bool {
+        let set = CharacterSet.lowercaseLetters
+        for character in string {
+            if let scala = UnicodeScalar(String(character)) {
+                if !set.contains(scala) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    static func isUppercase(string: String) -> Bool {
+        let set = CharacterSet.uppercaseLetters
+        for character in string {
+            if let scala = UnicodeScalar(String(character)) {
+                if !set.contains(scala) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
 }
