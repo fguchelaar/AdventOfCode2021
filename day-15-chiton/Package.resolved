@@ -12,11 +12,11 @@
       },
       {
         "package": "swift-collections",
-        "repositoryURL": "https://github.com/apple/swift-collections",
+        "repositoryURL": "https://github.com/AquaGeek/swift-collections",
         "state": {
-          "branch": null,
-          "revision": "48254824bb4248676bf7ce56014ff57b142b77eb",
-          "version": "1.0.2"
+          "branch": "priority-queue",
+          "revision": "dff2b1783badd696c3135abd8e26c3b7ad2e67fd",
+          "version": null
         }
       },
       {

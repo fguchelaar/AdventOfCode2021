@@ -11,19 +11,6 @@ extension Point {
     }
 }
 
-// helper to have the score readily available when adding it to the ordered set
-struct PointAndScore {
-    let point: Point
-    let score: Int
-}
-
-extension PointAndScore: Hashable {
-    // only check for the point, that makes it easy to check if the point is already in the openSet
-    static func == (lhs: PointAndScore, rhs: PointAndScore) -> Bool {
-        lhs.point == rhs.point
-    }
-}
-
 public class Puzzle {
     var grid: [Point: Int]
     var rowCount: Int = 0
@@ -87,16 +74,15 @@ public class Puzzle {
             0 // tried various heuristics, but 0 seems to be best 🤔
         }
 
-        var openSet = OrderedSet<PointAndScore>()
-        openSet.append(PointAndScore(point: start, score: 0))
+        var openSet = PriorityQueue<Point, Int>()
+        openSet.insert(start, priority: 0)
 
         var cameFrom: [Point: Point] = [:]
 
         var gScore: [Point: Int] = [:]
         gScore[start] = 0
 
-        while !openSet.isEmpty {
-            let current = openSet.removeFirst().point
+        while let current = openSet.popMin() {
             if current == goal {
                 return reconstructPath(cameFrom: cameFrom, current: current)
             }
@@ -104,25 +90,11 @@ public class Puzzle {
             for neighbor in current.n4() {
                 if let d = graph[neighbor] { // when nil, it's a neighbor outside of the graph
                     let tentativeGScore = gScore[current]! + d
-
                     if tentativeGScore < gScore[neighbor, default: Int.max] {
                         cameFrom[neighbor] = current
                         gScore[neighbor] = tentativeGScore
                         let fScore = tentativeGScore + h(neighbor)
-                        let ps = PointAndScore(point: neighbor, score: fScore)
-                        if !openSet.contains(ps) {
-                            var didInsert = false
-                            for i in 0..<openSet.count {
-                                if openSet[i].score > ps.score {
-                                    openSet.insert(ps, at: i)
-                                    didInsert = true
-                                    break
-                                }
-                            }
-                            if !didInsert {
-                                openSet.append(ps)
-                            }
-                        }
+                        openSet.insert(neighbor, priority: fScore)
                     }
                 }
             }
