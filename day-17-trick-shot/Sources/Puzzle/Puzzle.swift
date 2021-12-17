@@ -32,62 +32,67 @@ public class Puzzle {
             x: values[0],
             y: values[2],
             width: abs(values[0] - values[1]) + 1,
-            height: abs(values[2] - values[3]) + 1)
+            height: abs(values[2] - values[3]) + 1
+        )
     }
 
     public func part1() -> Int {
-        var heights = Set<Int>()
+        var maxHeight = Int.min
+        let minX = getMinimalXVelocity()
         for y in 0...Int(abs(target.minY)) {
-            for x in 1...Int(target.minX) {
+            for x in minX...Int(target.minX) {
                 let v = CGPoint(x: x, y: y)
                 if let height = findHeight(velocity: v) {
-                    heights.insert(height)
+                    maxHeight = max(height, maxHeight)
                 }
             }
         }
-
-        return heights.max()!
+        return maxHeight
     }
 
     public func part2() -> Int {
         var hits = Set<CGPoint>()
+        let minX = getMinimalXVelocity()
         for y in Int(target.minY)...Int(abs(target.minY)) {
-            for x in 1...Int(target.maxX) {
+            for x in minX...Int(target.maxX) {
                 let v = CGPoint(x: x, y: y)
                 if isHit(velocity: v) {
                     hits.insert(v)
                 }
             }
         }
-
         return hits.count
     }
 
+    // based on the target's minX, finds the miminum x-velocity to even reach the target
+    func getMinimalXVelocity() -> Int {
+        Int(sqrt(target.minX * 2))
+    }
+
     func findHeight(velocity: CGPoint) -> Int? {
-        var s = CGPoint(x: 0, y: 0)
+        var p = CGPoint.zero
         var v = velocity
         var maxHeight = Int.min
-        for _ in 1... {
-            s = s + v
-            maxHeight = max(maxHeight, Int(s.y))
-            if target.contains(s) {
+        while true {
+            p = p + v
+            maxHeight = max(maxHeight, Int(p.y))
+            if target.contains(p) {
                 return maxHeight
             }
 
             v.x = max(v.x - 1, 0)
             v.y = v.y - 1
 
-            if v.x == 0, s.x < target.minX || s.x > target.maxX {
+            // overshot, or no speed left to reach it
+            if p.x > target.maxX || v.x == 0, p.x < target.minX {
                 return nil
             }
-            if s.y < target.minY {
-                return nil
-            }
-            if s.y + v.y < target.minY {
+
+            // will drop below the target
+            if p.y + v.y < target.minY {
                 return nil
             }
         }
-        return nil
     }
 
     func isHit(velocity: CGPoint) -> Bool {
